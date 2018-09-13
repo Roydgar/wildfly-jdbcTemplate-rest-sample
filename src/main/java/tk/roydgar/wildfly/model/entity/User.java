@@ -2,8 +2,6 @@ package tk.roydgar.wildfly.model.entity;
 
 import lombok.*;
 
-import javax.persistence.*;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
