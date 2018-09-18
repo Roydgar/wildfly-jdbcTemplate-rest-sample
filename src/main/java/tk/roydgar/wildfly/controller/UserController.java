@@ -3,7 +3,10 @@ package tk.roydgar.wildfly.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tk.roydgar.wildfly.model.entity.Token;
 import tk.roydgar.wildfly.model.entity.User;
+import tk.roydgar.wildfly.model.entity.form.LoginForm;
+import tk.roydgar.wildfly.model.entity.form.RegisterForm;
 import tk.roydgar.wildfly.model.service.UserService;
 
 import java.util.List;
@@ -16,7 +19,9 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> findUser(@PathVariable Long userId) {
+    public ResponseEntity<?> findUser(
+            @RequestHeader String token,
+            @PathVariable Long userId) {
         return userService.findById(userId);
     }
 
@@ -30,11 +35,10 @@ public class UserController {
         return userService.saveUser(user);
     }
 
-    @PostMapping("/all")
-    public void saveAllUsers(@RequestBody List<User> users) {
-        userService.saveAllUsers(users);
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody RegisterForm registerForm) {
+        return userService.registerUser(registerForm);
     }
-
 
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user) {
@@ -42,8 +46,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<?> deleteUserById(@PathVariable Long userId) {
-        return userService.deleteUserById(userId);
+    public ResponseEntity<?> deleteUser(@RequestBody User user) {
+        return userService.deleteUser(user);
     }
 
 }
