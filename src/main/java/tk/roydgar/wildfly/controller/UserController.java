@@ -18,7 +18,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{userId}")
+    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
     public ResponseEntity<?> findUser(
             @RequestHeader String token,
             @PathVariable Long userId) {

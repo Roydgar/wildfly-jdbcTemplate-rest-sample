@@ -1,5 +1,6 @@
 package tk.roydgar.wildfly.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ public class User {
 
     private String login;
 
+    @JsonIgnore
     private String password;
 
     @Enumerated(value = EnumType.STRING)
@@ -28,7 +30,8 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private State state;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<Token> tokens;
 
     public enum Role {

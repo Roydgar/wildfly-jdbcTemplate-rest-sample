@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 import tk.roydgar.wildfly.model.entity.Token;
 import tk.roydgar.wildfly.model.entity.User;
 import tk.roydgar.wildfly.model.entity.form.LoginForm;
@@ -25,16 +27,20 @@ public class LoginService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Transactional
     public ResponseEntity<Token> login(LoginForm loginForm) {
         Optional<User> userCandidate = userRepository.findByLogin(loginForm.getLogin());
 
         if (userCandidate.isPresent()) {
             User user = userCandidate.get();
+            tokenRepository.deleteAll(user.getTokens());
+
+            String randomToken = RandomStringUtils.random(16, true, true);
 
             if (passwordEncoder.matches(loginForm.getPassword(), user.getPassword())) {
                 Token token = Token.builder()
                         .user(user)
-                        .value(RandomStringUtils.random(10, true, true))
+                        .value(randomToken)
                         .build();
 
                 tokenRepository.save(token);
